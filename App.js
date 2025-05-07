@@ -2,36 +2,47 @@ import React, { useState } from 'react';
 import { SafeAreaView, Text, TextInput, Button, View, StyleSheet, ScrollView } from 'react-native';
 
 export default function App() {
-  const [quantidade, setQuantidade] = useState('6');
-  const [numeros, setNumeros] = useState([]);
+  const [qtdDezenas, setQtdDezenas] = useState('6');
+  const [numerosSorteados, setNumerosSorteados] = useState([]);
 
-  function gerarNumeros() {
-    const qtd = Math.min(Math.max(parseInt(quantidade), 6), 20); 
-    const nums = new Set();
+  function sortearNumeros() {
+    let qtd = parseInt(qtdDezenas);
 
-    while (nums.size < qtd) {
-      const n = Math.floor(Math.random() * 60) + 1;
-      nums.add(n);
+    if (qtd < 6) {
+      qtd = 6;
     }
 
-    setNumeros(Array.from(nums).sort((a, b) => a - b));
+    if (qtd > 20) {
+      qtd = 20;
+    }
+
+    let numerosGerados = [];
+    while (numerosGerados.length < qtd) {
+      let numeroAleatorio = Math.floor(Math.random() * 60) + 1;
+      if (!numerosGerados.includes(numeroAleatorio)) {
+        numerosGerados.push(numeroAleatorio);
+      }
+    }
+
+    numerosGerados.sort((a, b) => a - b);
+    setNumerosSorteados(numerosGerados);
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.titulo}>Quantidade de Dezenas (6 a 20)</Text>
+    <SafeAreaView style={estilos.tela}>
+      <Text style={estilos.textoTitulo}>Digite quantos números (de 6 a 20):</Text>
       <TextInput
-        style={styles.input}
+        style={estilos.caixaTexto}
         keyboardType="numeric"
-        value={quantidade}
-        onChangeText={setQuantidade}
+        value={qtdDezenas}
+        onChangeText={setQtdDezenas}
       />
-      <Button title="SORTEAR" onPress={gerarNumeros} />
+      <Button title="Sortear Números" onPress={sortearNumeros} />
 
-      <ScrollView contentContainerStyle={styles.numerosContainer}>
-        {numeros.map((num, index) => (
-          <View key={index} style={styles.bola}>
-            <Text style={styles.numero}>{num}</Text>
+      <ScrollView contentContainerStyle={estilos.areaNumeros}>
+        {numerosSorteados.map((numero, i) => (
+          <View key={i} style={estilos.bolinha}>
+            <Text style={estilos.textoNumero}>{numero}</Text>
           </View>
         ))}
       </ScrollView>
@@ -39,45 +50,45 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
+const estilos = StyleSheet.create({
+  tela: {
     flex: 1,
-    backgroundColor: '#ecf0f1',
-    padding: 16,
+    backgroundColor: '#dcdcdc',
+    padding: 20,
     alignItems: 'center',
   },
-  titulo: {
-    fontSize: 20,
-    marginBottom: 8,
+  textoTitulo: {
+    fontSize: 18,
+    marginBottom: 10,
   },
-  input: {
+  caixaTexto: {
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: 'black',
     width: 100,
     textAlign: 'center',
-    fontSize: 18,
-    marginBottom: 12,
+    fontSize: 16,
+    marginBottom: 10,
+    backgroundColor: 'white',
   },
-  numerosContainer: {
+  areaNumeros: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    marginTop: 16,
+    marginTop: 20,
   },
-  bola: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  bolinha: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 8,
-    backgroundColor: '#fff',
+    margin: 5,
+    backgroundColor: '#ffffff',
   },
-  numero: {
-    fontSize: 20,
+  textoNumero: {
+    fontSize: 18,
     color: 'blue',
-    fontWeight: 'bold',
   },
 });
